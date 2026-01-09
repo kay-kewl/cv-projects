@@ -25,13 +25,23 @@ A collection of Computer Vision projects focusing on deep learning architectures
 
 ## Setup
 
-1. **Clone the repository:**
+1. Clone the repository:
   ```bash
-    git clone https://github.com/your-username/computer-vision-lab.git
-    cd computer-vision-lab
+    git clone https://github.com/kay-kewl/cv-projects.git
+    cd cv-projects
+  ```
+
+2. Create and activate a virtual environment:
+  ```bash
+    python -m venv venv
+
+    # windows 
+    .\venv\Scripts\activate
+    # macos/linux
+    source venv/bin/activate
   ```
   
-2. **Install dependencies:**
+3. Install dependencies:
   ```
     pip install -r requirements.txt
   ```

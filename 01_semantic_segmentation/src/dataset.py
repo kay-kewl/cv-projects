@@ -10,12 +10,6 @@ from torch.utils.data import Dataset
 
 class BirdsDataset(Dataset):
     def __init__(self, root_dir, split="train", image_size=256):
-        """
-        Args:
-            root_dir (str): Path to data directory (e.g., './data')
-            split (str): 'train' or 'val'
-            image_size (int): Target image resolution
-        """
         self.root_dir = os.path.join(root_dir, split)
         self.images_folder = os.path.join(self.root_dir, "images")
         self.gt_folder = os.path.join(self.root_dir, "gt")
@@ -49,12 +43,11 @@ class BirdsDataset(Dataset):
         if split == "train":
             return A.Compose(
                 [
-                    A.Resize(height=size, width=size),
+                    A.LongestMaxSize(max_size=size),
+                    A.PadIfNeeded(min_height=size, min_width=size, border_mode=cv2.BORDER_CONSTANT, fill=0, fill_mask=0),
                     A.HorizontalFlip(p=0.5),
-                    A.ShiftScaleRotate(
-                        shift_limit=0.05, scale_limit=0.05, rotate_limit=15, p=0.5
-                    ),
-                    A.CoarseDropout(max_holes=8, max_height=32, max_width=32, p=0.3),
+                    A.Affine(scale=(0.95, 1.05), translate_percent=(-0.05, 0.05), rotate=(-15, 15), p=0.5),
+                    A.CoarseDropout(num_holes_range=(1, 8), hole_height_range=(1, 32), hole_width_range=(1, 32), p=0.3),
                     A.ColorJitter(p=0.2),
                     A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                     ToTensorV2(),
@@ -63,7 +56,8 @@ class BirdsDataset(Dataset):
         else:
             return A.Compose(
                 [
-                    A.Resize(height=size, width=size),
+                    A.LongestMaxSize(max_size=size),
+                    A.PadIfNeeded(min_height=size, min_width=size, border_mode=cv2.BORDER_CONSTANT, fill=0, fill_mask=0),
                     A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                     ToTensorV2(),
                 ]
@@ -73,9 +67,12 @@ class BirdsDataset(Dataset):
         return len(self.image_paths)
 
     def __getitem__(self, index):
-        img = np.array(Image.open(self.image_paths[index]).convert("RGB"))
-        mask = np.array(Image.open(self.mask_paths[index]).convert("L"))
+        img = cv2.imread(self.image_paths[index])
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    
+        mask = cv2.imread(self.mask_paths[index], cv2.IMREAD_GRAYSCALE)
         mask = (mask > 0).astype(np.float32)
+    
         if self.transform:
             transformed = self.transform(image=img, mask=mask)
             img = transformed["image"]

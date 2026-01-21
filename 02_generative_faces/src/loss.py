@@ -3,7 +3,7 @@ import torch.nn.functional as F
 
 
 class VAELoss:
-    def __init__(self, kld_weight=0.00025):
+    def __init__(self, kld_weight=0.1):
         """
         Computes the VAE Loss (Evidence Lower Bound).
 
@@ -22,8 +22,9 @@ class VAELoss:
             mu: Latent mean
             logvar: Latent log variance
         """
-        recon_loss = F.binary_cross_entropy(recon_x, x, reduction="sum")
-        kld_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+        batch_size = x.size(0)
+        recon_loss = F.binary_cross_entropy(recon_x, x, reduction="sum") / batch_size
+        kld_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp()) / batch_size
         total_loss = recon_loss + (self.kld_weight * kld_loss)
 
         return total_loss, recon_loss, kld_loss

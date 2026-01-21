@@ -10,16 +10,16 @@ class ConvVAE(nn.Module):
         super(ConvVAE, self).__init__()
         self.latent_dim = latent_dim
         self.encoder = nn.Sequential(
-            nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1),
+            nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1, bias=False),
             nn.BatchNorm2d(32),
             nn.LeakyReLU(0.2),
-            nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1),
+            nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1, bias=False),
             nn.BatchNorm2d(64),
             nn.LeakyReLU(0.2),
-            nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=1),
+            nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=1, bias=False),
             nn.BatchNorm2d(128),
             nn.LeakyReLU(0.2),
-            nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1),
+            nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1, bias=False),
             nn.BatchNorm2d(256),
             nn.LeakyReLU(0.2),
         )
@@ -30,22 +30,22 @@ class ConvVAE(nn.Module):
         self.decoder_input = nn.Linear(latent_dim, 256 * 4 * 4)
         self.decoder = nn.Sequential(
             nn.ConvTranspose2d(
-                256, 128, kernel_size=3, stride=2, padding=1, output_padding=1
+                256, 128, kernel_size=3, stride=2, padding=1, output_padding=1, bias=False
             ),
             nn.BatchNorm2d(128),
             nn.LeakyReLU(0.2),
             nn.ConvTranspose2d(
-                128, 64, kernel_size=3, stride=2, padding=1, output_padding=1
+                128, 64, kernel_size=3, stride=2, padding=1, output_padding=1, bias=False
             ),
             nn.BatchNorm2d(64),
             nn.LeakyReLU(0.2),
             nn.ConvTranspose2d(
-                64, 32, kernel_size=3, stride=2, padding=1, output_padding=1
+                64, 32, kernel_size=3, stride=2, padding=1, output_padding=1, bias=False
             ),
             nn.BatchNorm2d(32),
             nn.LeakyReLU(0.2),
             nn.ConvTranspose2d(
-                32, 3, kernel_size=3, stride=2, padding=1, output_padding=1
+                32, 3, kernel_size=3, stride=2, padding=1, output_padding=1, bias=True
             ),
             nn.Sigmoid(),
         )

@@ -16,16 +16,7 @@ The model uses a symmetric Encoder-Decoder architecture designed for 64x64 image
     2.  **KL Divergence:** Regularizes the latent space to approximate a Standard Normal Distribution $\mathcal{N}(0, I)$.
 *   **Preprocessing:** Center cropping to 178x178 and resizing to 64x64.
 
-## Usage
-
-### 1. Data Preparation
-Download the [CelebA dataset](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html).
-Ensure the `img_align_celeba` folder is located at `../data/celeba/img_align_celeba`.
-
-### 2. Training
-The training logic is encapsulated in the `notebooks/latent_walk.ipynb` for interactive analysis, or can be orchestrated using the modules in `src/`.
-
-### 3. Key Results
+## Key Results
 *   **Reconstruction:** High fidelity reconstruction of validation images.
 *   **Generation:** Generating novel faces from random noise.
 *   **Latent Walk:** Smooth morphing between two distinct faces.

@@ -18,19 +18,6 @@ Additionally, this project introduces a Trash Detection mechanism. By analyzing 
     1.  **Verification:** Cosine Similarity between two face embeddings.
     2.  **Quality Check:** L2-Norm of the pre-normalized vector serves as a proxy for image quality.
 
-## Usage
-
-### 1. Data Preparation
-Download the [CelebA dataset](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html).
-You need two files in `data/celeba`:
-*   `img_align_celeba/` for the images.
-*   `identity_CelebA.txt` for the indentity labels.
-
-### 2. Analysis
-The core value of this project is demonstrated in `notebooks/analysis.ipynb`, which visualizes:
-*   The separation between "Same Identity" vs "Different Identity" distributions.
-*   The correlation between Embedding Norm and Image Quality.
-
-### 3. Key Results
+## Key Results
 *   **Clear Decision Boundary:** A distinct threshold exists to separate valid matches from impostors.
 *   **Automated Filtering:** Successfully identifies "Trash" photos (profiles, occlusions) by filtering the lowest 5% of embedding norms.

@@ -23,18 +23,8 @@ class CelebAIdentityDataset(Dataset):
         self.transform = self._get_transforms(split, image_size)
 
     def _load_identities(self):
-        """Parses identity_CelebA.txt"""
-        if not os.path.exists(self.identity_file):
-            raise FileNotFoundError(f"Identity file not found at {self.identity_file}")
-
-        images = []
-        labels = []
-
         with open(self.identity_file, "r") as f:
             lines = f.readlines()
-
-        unique_ids = sorted(list(set([int(line.split()[1]) for line in lines])))
-        id_map = {original: new for new, original in enumerate(unique_ids)}
 
         split_ranges = {
             "train": (0, 162770),
@@ -42,8 +32,13 @@ class CelebAIdentityDataset(Dataset):
             "test": (182637, 202599),
         }
         start, end = split_ranges.get(self.split, (0, 0))
+        lines_in_split = lines[start:end]
 
-        for line in lines[start:end]:
+        unique_ids = sorted(list(set([int(line.split()[1]) for line in lines_in_split])))
+        id_map = {original: new for new, original in enumerate(unique_ids)}
+
+        images, labels = [],[]
+        for line in lines_in_split:
             fname, original_id = line.split()
             images.append(os.path.join(self.image_dir, fname))
             labels.append(id_map[int(original_id)])
@@ -54,6 +49,7 @@ class CelebAIdentityDataset(Dataset):
         if split == "train":
             return transforms.Compose(
                 [
+                    transforms.CenterCrop(178),
                     transforms.Resize((size, size)),
                     transforms.RandomHorizontalFlip(),
                     transforms.RandomRotation(10),

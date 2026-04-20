@@ -34,7 +34,7 @@ class ArcFaceLoss(nn.Module):
         W = F.normalize(self.weight)
         embeddings = F.normalize(embeddings)
         cosine = F.linear(embeddings, W)
-        sine = torch.sqrt((1.0 - torch.pow(cosine, 2)).clamp(0, 1))
+        sine = torch.sqrt((1.0 - torch.pow(cosine, 2)).clamp(1e-7, 1.0))
         phi = cosine * self.cos_m - sine * self.sin_m
         phi = torch.where(cosine > self.th, phi, cosine - self.mm)
         one_hot = torch.zeros(cosine.size(), device=embeddings.device)
